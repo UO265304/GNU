@@ -275,6 +275,8 @@ class Rx_qpsk_ofdm(gr.top_block, Qt.QWidget):
             1,
             (),
             0)
+        self.digital_diff_decoder_bb_1 = digital.diff_decoder_bb(4)
+        self.digital_diff_decoder_bb_0 = digital.diff_decoder_bb(2)
         self.digital_crc32_bb_0_0 = digital.crc32_bb(True, packet_length_tag_key, True)
         self.digital_constellation_decoder_cb_1 = digital.constellation_decoder_cb(payload_mod.base())
         self.digital_constellation_decoder_cb_0 = digital.constellation_decoder_cb(header_mod.base())
@@ -295,9 +297,11 @@ class Rx_qpsk_ofdm(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_delay_0, 0), (self.blocks_multiply_xx_0, 1))
         self.connect((self.blocks_multiply_xx_0, 0), (self.digital_header_payload_demux_0, 0))
         self.connect((self.blocks_repack_bits_bb_0_1, 0), (self.digital_crc32_bb_0_0, 0))
-        self.connect((self.digital_constellation_decoder_cb_0, 0), (self.digital_packet_headerparser_b_0, 0))
-        self.connect((self.digital_constellation_decoder_cb_1, 0), (self.blocks_repack_bits_bb_0_1, 0))
+        self.connect((self.digital_constellation_decoder_cb_0, 0), (self.digital_diff_decoder_bb_0, 0))
+        self.connect((self.digital_constellation_decoder_cb_1, 0), (self.digital_diff_decoder_bb_1, 0))
         self.connect((self.digital_crc32_bb_0_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.digital_diff_decoder_bb_0, 0), (self.digital_packet_headerparser_b_0, 0))
+        self.connect((self.digital_diff_decoder_bb_1, 0), (self.blocks_repack_bits_bb_0_1, 0))
         self.connect((self.digital_header_payload_demux_0, 0), (self.fft_vxx_0_0, 0))
         self.connect((self.digital_header_payload_demux_0, 1), (self.fft_vxx_1, 0))
         self.connect((self.digital_ofdm_chanest_vcvc_0, 0), (self.digital_ofdm_frame_equalizer_vcvc_0, 0))
